@@ -88,7 +88,7 @@ DPDARulebook = Struct.new(:rules) do
 end
 
 # 确定性下推自动机
-DPDA = Struct.new(:current_configuration, :accept_states, :rulebook) do
+class DPDA < Struct.new(:current_configuration, :accept_states, :rulebook)
   # 判断当前状态是否可以被接受
   def accepting?
     accept_states.include?(current_configuration.state)
@@ -100,6 +100,7 @@ DPDA = Struct.new(:current_configuration, :accept_states, :rulebook) do
   end
 
   def next_configuration(character)
+    # 如果有匹配的规则， 就应用；否则， 就转移到stuck状态。
     if rulebook.applies_to?(current_configuration, character)
       rulebook.next_configuration(current_configuration, character)
     else
